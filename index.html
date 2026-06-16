@@ -202,7 +202,6 @@
       border: 1px solid var(--border);
       border-radius: var(--r);
       box-shadow: var(--shadow-md);
-      overflow: hidden;
     }
 
     .conv-head {
@@ -233,10 +232,10 @@
       align-items: center;
       border: 1.5px solid var(--border2);
       border-radius: var(--r-sm);
-      overflow: hidden;
       margin-bottom: 20px;
       background: var(--white);
       transition: border-color .2s, box-shadow .2s;
+      position: relative;
     }
     .conv-input-row:focus-within {
       border-color: var(--green);
@@ -271,6 +270,7 @@
       user-select: none;
       background: #fafbfc;
       transition: background .15s;
+      border-radius: 0 var(--r-sm) var(--r-sm) 0;
     }
     .cur-badge:hover { background: var(--bg); }
     .cur-badge .cflag { font-size: 1.1rem; }
@@ -614,16 +614,16 @@
           oninput="calculate()"
         />
         <div class="cur-dropdown" id="curDropdown">
-          <div class="cur-badge" onclick="toggleMenu()">
+          <div class="cur-badge" onclick="toggleMenu(event)">
             <span class="cflag" id="curFlag">🇪🇺</span>
             <span class="cname" id="curName">EUR</span>
             <svg class="cchev" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
           </div>
           <div class="cur-menu" id="curMenu">
-            <div class="cur-option selected" onclick="selectCur('EUR','🇪🇺','EUR')">
+            <div class="cur-option selected" onclick="selectCur(event,'EUR','🇪🇺','EUR')">
               🇪🇺 <span>EUR</span><span class="oname">Euro</span>
             </div>
-            <div class="cur-option" onclick="selectCur('USD','🇺🇸','USD')">
+            <div class="cur-option" onclick="selectCur(event,'USD','🇺🇸','USD')">
               🇺🇸 <span>USD</span><span class="oname">Dólar</span>
             </div>
           </div>
@@ -766,7 +766,7 @@
         </div>
         <div class="how-item">
           <div class="how-num">4</div>
-          <div class="how-text">Você envia o <strong>total em USDT</strong> (valor + tarifa).</div>
+          <div class="how-text">Você envia o <strong>total em USDT</strong> (valor + tarifa) para nossa carteira.</div>
         </div>
       </div>
     </div>
@@ -809,16 +809,18 @@
   function pct(r) { return (r*100).toFixed(2).replace('.',',')+'%'; }
 
   // ── DROPDOWN ──────────────────────────────────────────────
-  function toggleMenu() {
+  function toggleMenu(e) {
+    e.stopPropagation();
     document.getElementById('curMenu').classList.toggle('open');
   }
-  function selectCur(code, flag, name) {
+  function selectCur(e, code, flag, name) {
+    e.stopPropagation();
     cur = code;
     document.getElementById('curFlag').textContent  = flag;
     document.getElementById('curName').textContent  = name;
     document.getElementById('curMenu').classList.remove('open');
     document.querySelectorAll('.cur-option').forEach(o => o.classList.remove('selected'));
-    event.currentTarget.classList.add('selected');
+    e.currentTarget.classList.add('selected');
     calculate();
   }
   document.addEventListener('click', e => {
